@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1009878257584",
+    "firebase_url": "https://temicamera-4624e-default-rtdb.firebaseio.com",
+    "project_id": "temicamera-4624e",
+    "storage_bucket": "temicamera-4624e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009878257584:android:84936e09dac1c2d89c9075",
+        "android_client_info": {
+          "package_name": "com.example.demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD80ZZulPGSmizpIY9XKIhr1lcGJDSa-6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009878257584:android:4a2252508dcd0f699c9075",
+        "android_client_info": {
+          "package_name": "com.example.temi_new"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD80ZZulPGSmizpIY9XKIhr1lcGJDSa-6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009878257584:android:34fc477dbe8f21fa9c9075",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD80ZZulPGSmizpIY9XKIhr1lcGJDSa-6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
