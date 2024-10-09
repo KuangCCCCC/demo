@@ -2,6 +2,7 @@ package com.example.temilib;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import com.robotemi.sdk.Robot;
 import com.robotemi.sdk.navigation.listener.OnCurrentPositionChangedListener;
@@ -103,19 +104,29 @@ public class PatrolHelper implements
         if (status.equalsIgnoreCase("complete")) {
             // 到達地點後暫停
             Log.d(TAG, "到達 " + location + "，執行定點動作...");
-            // 到達地點，讓機器人轉身拍照
-            for (int i = 0; i < 8; i++) { // 360度 / 45度 = 8次
-                turnAndCapture(45); // 每次轉 45 度並拍照
-            }
 
             // 暫停巡邏一段時間或等待執行動作
-            new Handler().postDelayed(() -> {
-                // 在這裡執行你的動作，例如播放音樂、拍照、顯示訊息等
-                Log.d(TAG, "動作執行完成，繼續巡邏");
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                // 轉身並拍照的邏輯
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    int turnCount = 0;
 
-                // 前往下一個地點
-                currentPointIndex = (currentPointIndex + 1) % patrolPoints.size();
-                goToNextPoint();
+                    @Override
+                    public void run() {
+                        if (turnCount < 8) {
+                            turnAndCapture(45);  // 每次轉 45 度並拍照
+                            turnCount++;
+                            new Handler(Looper.getMainLooper()).postDelayed(this, 2000);  // 每次延遲2秒再繼續
+                        } else {
+                            Log.d(TAG, "動作執行完成，繼續巡邏");
+
+                            if (!patrolPoints.isEmpty()) {
+                                currentPointIndex = (currentPointIndex + 1) % patrolPoints.size();
+                                goToNextPoint();
+                            }
+                        }
+                    }
+                });
             }, 10000); // 停留10秒，根據需要調整
         } else if (status.equalsIgnoreCase("abort")) {
             // 如果導航失敗，停止巡邏
