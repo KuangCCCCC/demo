@@ -17,16 +17,17 @@ import androidx.core.content.ContextCompat;
 import com.example.cameraxlib.CameraXHelper;
 import com.example.temilib.PatrolHelper;
 
+
 public class MainActivity extends AppCompatActivity {
     private CameraXHelper cameraXHelper;
     private PatrolHelper patrolHelper;
 
     private Button startButton, stopButton, closeButton;
     private Handler handler = new Handler(Looper.getMainLooper());
-    private boolean isRunning = false;
+    private boolean isRunning = false;// 追蹤拍照狀態
+    private boolean isPatrolStarted = false; // 追蹤巡邏狀態
     private Runnable photoCaptureRunnable;
     private static final int CAMERA_REQUEST_CODE = 100;
-    private boolean isCapturing = false; // 防止重複拍照
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,11 @@ public class MainActivity extends AppCompatActivity {
         // 初始化 CameraXHelper
         cameraXHelper = new CameraXHelper(this);
         // 初始化 patrolHelper
-        patrolHelper = new PatrolHelper();
+        patrolHelper = new PatrolHelper(this);
         patrolHelper.initPatrol();
+        // 設定 Temi 頭部傾斜
+
+        patrolHelper.tiltHead(30, 0.5f); // 將頭部傾斜到只角度，轉動速度
 
         // 設定按鈕
         startButton = findViewById(R.id.start_button);
@@ -51,10 +55,8 @@ public class MainActivity extends AppCompatActivity {
         photoCaptureRunnable = new Runnable() {
             @Override
             public void run() {
-                if (isRunning && !isCapturing) {
-                    isCapturing = true;
+                if (isRunning) {
                     cameraXHelper.capturePhoto();
-                    handler.postDelayed(() -> isCapturing = false, 5000); // 5秒間隔
                 }
                 handler.postDelayed(this, 500); // 確保任務持續執行，短間隔檢查狀態
             }
@@ -62,22 +64,34 @@ public class MainActivity extends AppCompatActivity {
 
         // 開始事件
         startButton.setOnClickListener(v -> {
-            patrolHelper.startPatrolling(); // 開始巡邏
-            isRunning = true;
-            handler.post(photoCaptureRunnable);
-            Toast.makeText(this, "拍照已開始", Toast.LENGTH_SHORT).show();
+            if (!isPatrolStarted) { // 確保巡邏未開始
+                patrolHelper.startPatrolling(); // 開始巡邏
+                isRunning = true;
+                isPatrolStarted = true; // 設定為巡邏已開始
+                handler.post(photoCaptureRunnable); // 啟動拍照任務
+                Toast.makeText(this, "拍照已開始", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "巡邏已經在進行中", Toast.LENGTH_SHORT).show(); // 用戶提示
+            }
         });
 
         // 暫停拍照
         stopButton.setOnClickListener(v -> {
-            pauseCapture();
-            patrolHelper.stopPatrolling();
-            Log.d("MainActivity", "巡邏已暫停。");
+            if (isPatrolStarted) {
+                pauseCapture(); // 停止拍照
+                patrolHelper.stopPatrolling(); // 停止巡邏
+                isRunning = false;
+                isPatrolStarted = false; // 設定巡邏未開始
+                Log.d("MainActivity", "巡邏已暫停。");
+                Toast.makeText(this, "巡邏已暫停", Toast.LENGTH_SHORT).show();
+            }
         });
 
         // 關閉應用程式
         closeButton.setOnClickListener(v -> {
-            patrolHelper.stopPatrolling(); // 結束巡邏
+            patrolHelper.stopPatrolling(); // 停止巡邏
+            isRunning = false;
+            isPatrolStarted = false; // 結束巡邏
             Log.d("MainActivity", "巡邏已結束。");
             closeApp();
         });
