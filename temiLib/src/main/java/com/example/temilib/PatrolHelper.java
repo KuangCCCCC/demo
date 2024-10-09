@@ -109,14 +109,13 @@ public class PatrolHelper implements
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 // 轉身並拍照的邏輯
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    int turnCount = 0;
-
+                    int turnCount = 0;//設定轉動次數
                     @Override
                     public void run() {
                         if (turnCount < 8) {
                             turnAndCapture(45);  // 每次轉 45 度並拍照
                             turnCount++;
-                            new Handler(Looper.getMainLooper()).postDelayed(this, 2000);  // 每次延遲2秒再繼續
+                            new Handler(Looper.getMainLooper()).postDelayed(this, 1000);  // 每次延遲2秒再繼續
                         } else {
                             Log.d(TAG, "動作執行完成，繼續巡邏");
 
