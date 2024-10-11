@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         patrolHelper.initPatrol();
         // 設定 Temi 頭部傾斜
 
-        patrolHelper.tiltHead(30, 0.5f); // 將頭部傾斜到只角度，轉動速度
+        patrolHelper.tiltHead(20, 0.5f); // 將頭部傾斜到指定角度，轉動速度
 
         // 設定按鈕
         startButton = findViewById(R.id.start_button);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isRunning) {
                     cameraXHelper.capturePhoto();
                 }
-                handler.postDelayed(this, 500); // 確保任務持續執行，短間隔檢查狀態
+                handler.postDelayed(this, 5000); // 確保任務持續執行，短間隔檢查狀態
             }
         };
 

@@ -13,6 +13,7 @@ import com.robotemi.sdk.listeners.OnRobotReadyListener;
 import java.util.List;
 
 import com.example.cameraxlib.CameraXHelper;
+import com.robotemi.sdk.navigation.model.SpeedLevel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -74,7 +75,9 @@ public class PatrolHelper implements
         if (patrolPoints != null && !patrolPoints.isEmpty()) {
             String destination = patrolPoints.get(currentPointIndex);
             Log.d(TAG, "前往地點：" + destination);
-            robot.goTo(destination);
+            //goTo(位置,是否倒著前往,是否繞過障礙物,設置速度等級)
+            robot.goTo(destination, false, null, SpeedLevel.SLOW);
+
         }
     }
 
@@ -102,6 +105,14 @@ public class PatrolHelper implements
     public void onGoToLocationStatusChanged(@NotNull String location, String status, int id, @NotNull String desc) {
         Log.d(TAG, "地點：" + location + ", 狀態：" + status);
         if (status.equalsIgnoreCase("complete")) {
+            // 如果到達的是充電桩，不執行定點動作，但繼續巡邏
+            if ("home base".equalsIgnoreCase(location)) {
+                Log.d(TAG, "機器人已到達充電桩，不執行動作，繼續巡邏至下一個地點。");
+                // 前往下一個地點
+                currentPointIndex = (currentPointIndex + 1) % patrolPoints.size();
+                goToNextPoint();
+                return;  // 跳過後面的動作執行
+            }
             // 到達地點後暫停
             Log.d(TAG, "到達 " + location + "，執行定點動作...");
 
